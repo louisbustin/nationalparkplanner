@@ -1,0 +1,51 @@
+image: node:latest
+
+stages: # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  artifacts:
+    untracked: true
+  script:
+    - echo "Compiling the code..."
+    - npm install
+    - npm run build
+    - echo "Compile complete."
+
+run-tests-job:
+  stage: test
+  script:
+    - echo "Running unit tests..."
+    - npx playwright install
+    - npx playwright install-deps
+    - npm run test
+    - echo "Tests complete."
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+
+lint-test-job:
+  stage: test
+  script:
+    - echo "Linting code... This will take about 10 seconds."
+    - npm run lint
+    - echo "No lint issues found."
+
+deploy-job:
+  stage: deploy
+  dependencies:
+    - build-job
+  environment: production
+  script:
+    - echo "Deploying application..."
+    - npm run db:push
+    - npx sst deploy --stage production
+    - echo "Application successfully deployed."
+  only:
+    - /^release\/v\d+\.\d+\.\d+$/
+  when: manual
