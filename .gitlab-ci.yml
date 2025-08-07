@@ -43,7 +43,6 @@ deploy-job:
   environment: production
   script:
     - echo "Deploying application..."
-    - npm run db:push
     - npx sst deploy --stage production
     - echo "Application successfully deployed."
   only:
