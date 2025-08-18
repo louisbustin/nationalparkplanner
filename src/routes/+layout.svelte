@@ -5,31 +5,35 @@
 	import { AuthStatus } from '$lib/components';
 
 	let { children } = $props();
+	let hidden = $state(true);
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
-<Navbar>
-	<NavBrand href="/">
+<Navbar class="border-b border-gray-200 dark:border-gray-700">
+	<NavBrand href="/" class="flex items-center">
 		<span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
 			National Park Planner
 		</span>
 	</NavBrand>
 
-	<div class="flex md:order-2">
+	<!-- Mobile and Desktop Auth Status + Hamburger -->
+	<div class="flex items-center space-x-3 md:order-2">
 		<AuthStatus />
-		<NavHamburger />
+		<NavHamburger onclick={() => (hidden = !hidden)} class="md:hidden" />
 	</div>
 
-	<NavUl>
-		<NavLi href="/">Home</NavLi>
-		<NavLi href="/parks">Parks</NavLi>
-		<NavLi href="/trips">My Trips</NavLi>
+	<!-- Navigation Links -->
+	<NavUl {hidden} class="md:order-1 md:flex md:w-auto">
+		<NavLi href="/" class="md:hover:bg-transparent">Home</NavLi>
+		<NavLi href="/parks" class="md:hover:bg-transparent">Parks</NavLi>
+		<NavLi href="/trips" class="md:hover:bg-transparent">My Trips</NavLi>
 	</NavUl>
 </Navbar>
 
-<main class="container mx-auto px-4 py-8">
+<main class="container mx-auto max-w-7xl px-4 py-6 sm:py-8">
 	{@render children?.()}
 </main>

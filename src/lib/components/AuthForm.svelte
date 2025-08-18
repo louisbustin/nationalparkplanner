@@ -1,11 +1,15 @@
 <script lang="ts">
-	import { Button, Card, Alert, Spinner } from 'flowbite-svelte';
+	import { Button, Card, Spinner } from 'flowbite-svelte';
+	import LoadingButton from './LoadingButton.svelte';
+	import ErrorMessage from './ErrorMessage.svelte';
 
 	interface Props {
 		title: string;
 		submitText: string;
 		isLoading?: boolean;
 		generalError?: string;
+		loadingText?: string;
+		useLoadingButton?: boolean;
 		onsubmit?: (event: SubmitEvent) => void | Promise<void>;
 		children?: import('svelte').Snippet;
 	}
@@ -15,6 +19,8 @@
 		submitText,
 		isLoading = false,
 		generalError = '',
+		loadingText = 'Processing...',
+		useLoadingButton = true,
 		onsubmit,
 		children
 	}: Props = $props();
@@ -38,22 +44,32 @@
 		</div>
 
 		{#if hasGeneralError}
-			<Alert color="red" class="mb-4">
-				{generalError}
-			</Alert>
+			<ErrorMessage message={generalError} severity="error" class="mb-4" />
 		{/if}
 
 		<form onsubmit={handleSubmit} class="space-y-4">
 			{@render children?.()}
 
-			<Button type="submit" class="w-full" disabled={isLoading} color="primary">
-				{#if isLoading}
-					<Spinner class="mr-3" size="4" />
-					Processing...
-				{:else}
+			{#if useLoadingButton}
+				<LoadingButton
+					type="submit"
+					class="w-full"
+					loading={isLoading}
+					{loadingText}
+					color="primary"
+				>
 					{submitText}
-				{/if}
-			</Button>
+				</LoadingButton>
+			{:else}
+				<Button type="submit" class="w-full" disabled={isLoading} color="primary">
+					{#if isLoading}
+						<Spinner class="mr-3" size="4" />
+						{loadingText}
+					{:else}
+						{submitText}
+					{/if}
+				</Button>
+			{/if}
 		</form>
 	</Card>
 </div>
