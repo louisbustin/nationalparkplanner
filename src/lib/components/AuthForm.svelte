@@ -5,25 +5,21 @@
 		title: string;
 		submitText: string;
 		isLoading?: boolean;
-		errors?: Record<string, string>;
 		generalError?: string;
 		onsubmit?: (event: SubmitEvent) => void | Promise<void>;
-		children?: any;
+		children?: import('svelte').Snippet;
 	}
 
 	let {
 		title,
 		submitText,
 		isLoading = false,
-		errors = {},
 		generalError = '',
 		onsubmit,
 		children
 	}: Props = $props();
 
-	const hasFieldErrors = $derived(Object.keys(errors).length > 0);
 	const hasGeneralError = $derived(!!generalError);
-	const hasAnyError = $derived(hasFieldErrors || hasGeneralError);
 
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();

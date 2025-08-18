@@ -7,11 +7,10 @@
 	import type { ActionData } from './$types';
 
 	interface Props {
-		data?: any;
 		form?: ActionData;
 	}
 
-	let { data, form }: Props = $props();
+	let { form }: Props = $props();
 
 	// Form values
 	let email = $state('');
@@ -155,7 +154,7 @@
 				<div class="text-center">
 					<p class="text-sm text-gray-600">
 						Don't have an account?
-						<a href="/auth/register" class="text-primary-600 hover:text-primary-500 font-medium">
+						<a href="/auth/register" class="font-medium text-primary-600 hover:text-primary-500">
 							Sign up here
 						</a>
 					</p>

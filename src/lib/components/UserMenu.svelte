@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { authClient } from '$lib/auth-client';
 	import { Dropdown, DropdownItem, Avatar, Button } from 'flowbite-svelte';
 	import {
 		ChevronDownOutline,
@@ -10,7 +9,6 @@
 
 	interface Props {
 		user: {
-			id: string;
 			name: string;
 			email: string;
 			image?: string | null;
@@ -21,11 +19,14 @@
 
 	async function handleLogout() {
 		try {
-			await authClient.signOut();
-			// Redirect to home page after logout
-			goto('/');
+			// Use the comprehensive logout handler
+			const { handleLogout: performCompleteLogout } = await import('$lib/auth-utils');
+			await performCompleteLogout('/');
 		} catch (error) {
 			console.error('Logout failed:', error);
+
+			// Fallback: direct navigation to home
+			goto('/');
 		}
 	}
 </script>

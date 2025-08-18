@@ -1,6 +1,3 @@
-import type { RequestEvent } from '@sveltejs/kit';
-import { auth } from './auth';
-
 /**
  * User session interface based on Better Auth session structure
  */
@@ -37,85 +34,12 @@ export interface AuthState {
 }
 
 /**
- * Result interface for session validation operations
- */
-export interface SessionValidationResult {
-	isValid: boolean;
-	session: UserSession | null;
-	error?: string;
-}
-
-/**
- * Validates the current session from a SvelteKit request event
- * @param event - SvelteKit RequestEvent containing cookies and request data
- * @returns Promise<SessionValidationResult> - Validation result with session data
- */
-export async function validateSession(event: RequestEvent): Promise<SessionValidationResult> {
-	try {
-		// Use Better Auth's built-in session validation
-		const session = await auth.api.getSession({
-			headers: event.request.headers
-		});
-
-		if (!session) {
-			return {
-				isValid: false,
-				session: null,
-				error: 'No active session found'
-			};
-		}
-
-		// Check if session is expired
-		if (session.session.expiresAt < new Date()) {
-			// Clean up expired session
-			await cleanupExpiredSession(session.session.token);
-			return {
-				isValid: false,
-				session: null,
-				error: 'Session has expired'
-			};
-		}
-
-		return {
-			isValid: true,
-			session: session as UserSession,
-			error: undefined
-		};
-	} catch (error) {
-		console.error('Session validation error:', error);
-		return {
-			isValid: false,
-			session: null,
-			error: 'Session validation failed'
-		};
-	}
-}
-
-/**
  * Checks if a session is expired based on the expiration date
  * @param expiresAt - Session expiration date
  * @returns boolean - True if session is expired
  */
 export function isSessionExpired(expiresAt: Date): boolean {
 	return expiresAt < new Date();
-}
-
-/**
- * Cleans up an expired session by invalidating it
- * @param sessionToken - The session token to invalidate
- * @returns Promise<void>
- */
-export async function cleanupExpiredSession(sessionToken: string): Promise<void> {
-	try {
-		await auth.api.signOut({
-			headers: new Headers({
-				Authorization: `Bearer ${sessionToken}`
-			})
-		});
-	} catch (error) {
-		console.error('Failed to cleanup expired session:', error);
-		// Don't throw error as this is cleanup operation
-	}
 }
 
 /**
@@ -224,4 +148,109 @@ export function createLoginRedirect(currentPath: string): string {
 	}
 
 	return loginUrl;
+}
+
+/**
+ * Performs client-side logout with session cleanup
+ * @returns Promise<boolean> - True if logout was successful
+ */
+export async function performLogout(): Promise<boolean> {
+	try {
+		// Use Better Auth client to sign out
+		const { authClient } = await import('./auth-client');
+
+		await authClient.signOut();
+
+		return true;
+	} catch (error) {
+		console.error('Client-side logout failed:', error);
+		return false;
+	}
+}
+
+/**
+ * Clears all client-side authentication data
+ * This is used as a fallback when server-side logout fails
+ */
+export function clearClientAuthData(): void {
+	try {
+		// Clear any localStorage auth data (if any)
+		if (typeof localStorage !== 'undefined') {
+			const authKeys = Object.keys(localStorage).filter(
+				(key) => key.includes('auth') || key.includes('session') || key.includes('better-auth')
+			);
+			authKeys.forEach((key) => localStorage.removeItem(key));
+		}
+
+		// Clear any sessionStorage auth data (if any)
+		if (typeof sessionStorage !== 'undefined') {
+			const authKeys = Object.keys(sessionStorage).filter(
+				(key) => key.includes('auth') || key.includes('session') || key.includes('better-auth')
+			);
+			authKeys.forEach((key) => sessionStorage.removeItem(key));
+		}
+	} catch (error) {
+		console.error('Failed to clear client auth data:', error);
+	}
+}
+/**
+ * Handles complete logout process with proper state management
+ * @param redirectTo - Optional URL to redirect to after logout (defaults to home)
+ * @returns Promise<void>
+ */
+export async function handleLogout(redirectTo: string = '/'): Promise<void> {
+	try {
+		// Import navigation function
+		const { goto } = await import('$app/navigation');
+
+		// Perform client-side logout
+		const logoutSuccess = await performLogout();
+
+		if (!logoutSuccess) {
+			console.warn('Server-side logout failed, clearing client data');
+		}
+
+		// Always clear client-side data to ensure UI consistency
+		clearClientAuthData();
+
+		// Redirect to specified page
+		await goto(redirectTo, { replaceState: true });
+	} catch (error) {
+		console.error('Logout process failed:', error);
+
+		// Fallback: clear client data and redirect anyway
+		clearClientAuthData();
+
+		try {
+			const { goto } = await import('$app/navigation');
+			await goto(redirectTo, { replaceState: true });
+		} catch (navError) {
+			console.error('Navigation after logout failed:', navError);
+			// Last resort: reload the page
+			if (typeof window !== 'undefined') {
+				window.location.href = redirectTo;
+			}
+		}
+	}
+}
+
+/**
+ * Validates if the current user session is still valid
+ * This can be used to check session validity before performing sensitive operations
+ * @returns Promise<boolean> - True if session is valid
+ */
+export async function isCurrentSessionValid(): Promise<boolean> {
+	try {
+		// For client-side, we'll do a simple check by attempting to get session info
+		// This is less reliable than server-side validation but works for client-side needs
+		const { authClient } = await import('./auth-client');
+
+		// Try to get user info - if this succeeds, session is likely valid
+		const result = await authClient.getSession();
+
+		return !!result.data;
+	} catch (error) {
+		console.error('Session validation failed:', error);
+		return false;
+	}
 }

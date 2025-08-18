@@ -13,7 +13,7 @@
 		rule?: ValidationRule;
 		showPasswordStrength?: boolean;
 		disabled?: boolean;
-		autocomplete?: string | null;
+		autocomplete?: 'email' | 'current-password' | 'new-password' | 'name' | 'off';
 		name?: string;
 	}
 
@@ -81,7 +81,7 @@
 		{placeholder}
 		{value}
 		{disabled}
-		autocomplete={autocomplete as any}
+		{autocomplete}
 		color={hasError ? 'red' : undefined}
 		onblur={handleBlur}
 		oninput={handleInput}

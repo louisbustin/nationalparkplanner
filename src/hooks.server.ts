@@ -3,7 +3,9 @@ import { svelteKitHandler } from 'better-auth/svelte-kit';
 import { building } from '$app/environment';
 import { redirect } from '@sveltejs/kit';
 import type { Handle } from '@sveltejs/kit';
-import { validateSession, createLoginRedirect } from '$lib/auth-utils';
+import { validateSession } from '$lib/auth-utils.server';
+import { createLoginRedirect } from '$lib/auth-utils';
+import { sequence } from '@sveltejs/kit/hooks';
 
 /**
  * Protected route patterns that require authentication
@@ -15,13 +17,18 @@ const PROTECTED_ROUTES = ['/profile', '/dashboard', '/trips', '/settings'];
  */
 const AUTH_ROUTES = ['/auth/login', '/auth/register'];
 
-export const handle: Handle = async ({ event, resolve }) => {
-	// First, let Better Auth handle its own routes and set up session
-	const response = await svelteKitHandler({ event, resolve, auth, building });
+/**
+ * Logout route that should be accessible to authenticated users only
+ */
+const LOGOUT_ROUTE = '/auth/logout';
 
-	// Skip route protection during build time
+const setupSessionHandler: Handle = async ({ event, resolve }) => {
+	return svelteKitHandler({ event, resolve, auth, building });
+};
+
+const authHandler: Handle = async ({ event, resolve }) => {
 	if (building) {
-		return response;
+		return resolve(event);
 	}
 
 	const { pathname } = event.url;
@@ -40,11 +47,20 @@ export const handle: Handle = async ({ event, resolve }) => {
 	// Check if current route is an auth route
 	const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
 
+	// Check if current route is the logout route
+	const isLogoutRoute = pathname.startsWith(LOGOUT_ROUTE);
+
 	// Handle protected routes
 	if (isProtectedRoute && !isAuthenticated) {
 		// Redirect to login with return URL
 		const loginRedirect = createLoginRedirect(pathname + event.url.search);
 		throw redirect(302, loginRedirect);
+	}
+
+	// Handle logout route - only accessible to authenticated users
+	if (isLogoutRoute && !isAuthenticated) {
+		// If user is not authenticated, redirect to home
+		throw redirect(302, '/');
 	}
 
 	// Handle auth routes when user is already authenticated
@@ -58,5 +74,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		throw redirect(302, '/');
 	}
 
-	return response;
+	return resolve(event);
 };
+
+export const handle: Handle = sequence(setupSessionHandler, authHandler);

@@ -2,7 +2,7 @@
  * Reactive form state management for Svelte 5
  */
 
-import type { ValidationRules, FormState } from '$lib/validation';
+import type { ValidationRules } from '$lib/validation';
 import { validateForm } from '$lib/validation';
 
 export interface FormStateOptions {
