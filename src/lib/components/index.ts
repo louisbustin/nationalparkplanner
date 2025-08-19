@@ -1,6 +1,7 @@
 // Export form components
 export { default as FormField } from './FormField.svelte';
 export { default as AuthForm } from './AuthForm.svelte';
+export { default as StateDropdown } from './StateDropdown.svelte';
 
 // Export navigation components
 export { default as AuthStatus } from './AuthStatus.svelte';

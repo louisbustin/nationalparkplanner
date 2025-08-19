@@ -37,18 +37,21 @@
 	let searchTimeout: ReturnType<typeof setTimeout>;
 
 	// Handle search with debouncing
-	function handleSearch() {
+	function handleSearch(noTimeout = false) {
 		clearTimeout(searchTimeout);
-		searchTimeout = setTimeout(() => {
-			const url = new URL(page.url);
-			if (searchValue.trim()) {
-				url.searchParams.set('search', searchValue.trim());
-			} else {
-				url.searchParams.delete('search');
-			}
-			url.searchParams.delete('page'); // Reset to first page on new search
-			goto(url.toString());
-		}, 300);
+		searchTimeout = setTimeout(
+			() => {
+				const url = new URL(page.url);
+				if (searchValue.trim()) {
+					url.searchParams.set('search', searchValue.trim());
+				} else {
+					url.searchParams.delete('search');
+				}
+				url.searchParams.delete('page'); // Reset to first page on new search
+				goto(url.toString());
+			},
+			noTimeout ? 0 : 300
+		);
 	}
 
 	// Handle pagination
@@ -133,9 +136,13 @@
 			<div class="max-w-full flex-1">
 				<Search
 					bind:value={searchValue}
-					oninput={handleSearch}
+					oninput={() => handleSearch()}
 					placeholder="Search parks by name or state..."
 					clearable
+					clearableOnClick={() => {
+						searchValue = '';
+						handleSearch(true);
+					}}
 				></Search>
 			</div>
 			<div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
@@ -254,7 +261,7 @@
 		</Card>
 	{:else}
 		<!-- Empty State -->
-		<Card class="py-12 text-center">
+		<Card class="p-12 text-center">
 			<div class="flex flex-col items-center">
 				<MapPinAltSolid class="mb-4 h-16 w-16 text-gray-400 dark:text-gray-500" />
 				<Heading tag="h3" class="mb-2 text-lg font-medium text-gray-900 dark:text-white">
