@@ -4,6 +4,7 @@
 	import { Button, Card, Input, Label, Textarea, Helper, Heading, P, Alert } from 'flowbite-svelte';
 	import { ArrowLeftOutline, ExclamationCircleOutline, PenOutline } from 'flowbite-svelte-icons';
 	import { toastStore } from '$lib/toast-store.svelte';
+	import { StateDropdown } from '$lib/components';
 	import type { ActionData, PageData } from './$types';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
@@ -119,27 +120,13 @@
 
 				<!-- State -->
 				<div>
-					<Label for="state" class="mb-2 block">
-						State <span class="text-red-500">*</span>
-					</Label>
-					<Input
-						id="state"
-						name="state"
-						type="text"
-						placeholder="Enter state name"
+					<StateDropdown
 						bind:value={formValues.state}
-						color={hasFieldError('state') ? 'red' : undefined}
+						required={true}
 						disabled={isSubmitting}
-						required
+						color={hasFieldError('state') ? 'red' : undefined}
+						errorMessage={getFieldError('state')}
 					/>
-					{#if hasFieldError('state')}
-						<Helper class="mt-2" color="red">
-							<span class="font-medium">Error:</span>
-							{getFieldError('state')}
-						</Helper>
-					{:else}
-						<Helper class="mt-2">Enter the state where the park is located.</Helper>
-					{/if}
 				</div>
 
 				<!-- Established Date -->
@@ -264,7 +251,6 @@
 					{#if isSubmitting}
 						<svg
 							class="me-2 h-4 w-4 animate-spin"
-							fill="none"
 							viewBox="0 0 24 24"
 							xmlns="http://www.w3.org/2000/svg"
 						>

@@ -153,7 +153,7 @@ describe('Parks Validation', () => {
 			const invalidData = {
 				name: 'Test Park',
 				state: 'Wyoming',
-				area: 1000001
+				area: 10000001
 			};
 
 			expect(() => createParkSchema.parse(invalidData)).toThrow('Area seems unreasonably large');

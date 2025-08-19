@@ -33,7 +33,7 @@ export const createParkSchema = z.object({
 	area: z
 		.number()
 		.positive('Area must be a positive number')
-		.max(1000000, 'Area seems unreasonably large')
+		.max(10000000, 'Area seems unreasonably large')
 		.optional()
 });
 
@@ -118,7 +118,7 @@ export const createParkFormSchema = z.object({
 			z
 				.number()
 				.positive('Area must be a positive number')
-				.max(1000000, 'Area seems unreasonably large')
+				.max(10000000, 'Area seems unreasonably large')
 				.optional()
 		)
 });
