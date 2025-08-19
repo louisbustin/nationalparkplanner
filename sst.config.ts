@@ -14,6 +14,9 @@ export default $config({
 			domain: {
 				name: 'nationalparkplanner.us',
 				dns: sst.cloudflare.dns()
+			},
+			environment: {
+				DATABASE_URL: process.env.DATABASE_URL || ''
 			}
 		});
 	}
