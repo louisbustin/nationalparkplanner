@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import {
+		A,
 		Navbar,
 		NavBrand,
 		NavHamburger,
@@ -17,6 +18,8 @@
 		MapPinAltSolid,
 		UserSolid
 	} from 'flowbite-svelte-icons';
+	import { ToastContainer, ErrorBoundary } from '$lib/components';
+	import { toastStore } from '$lib/toast-store.svelte';
 	import type { LayoutData } from './$types';
 	import type { Snippet } from 'svelte';
 
@@ -73,10 +76,10 @@
 		</div>
 
 		<!-- Back to Main Site -->
-		<NavLi href="/" class="hidden md:block">
+		<A href="/" class="hidden md:block">
 			<HomeOutline class="me-1 h-4 w-4" />
 			Main Site
-		</NavLi>
+		</A>
 
 		<NavHamburger onclick={() => (hidden = !hidden)} class="md:hidden" />
 	</div>
@@ -154,7 +157,6 @@
 					{:else if index === 0}
 						<!-- First item (Home) -->
 						<BreadcrumbItem href={item.href} home>
-							<HomeOutline class="me-2 h-4 w-4" />
 							{item.label}
 						</BreadcrumbItem>
 					{:else}
@@ -168,7 +170,9 @@
 		<!-- Page Content -->
 		<main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
 			<div class="container mx-auto max-w-7xl px-4 py-6 sm:py-8">
-				{@render children?.()}
+				<ErrorBoundary>
+					{@render children?.()}
+				</ErrorBoundary>
 			</div>
 		</main>
 	</div>
@@ -186,3 +190,10 @@
 		<!-- Mobile sidebar content would go here -->
 	</div>
 {/if}
+
+<!-- Toast Container -->
+<ToastContainer
+	toasts={toastStore.items}
+	onRemove={(id) => toastStore.remove(id)}
+	position="top-right"
+/>

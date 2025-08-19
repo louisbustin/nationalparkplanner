@@ -1,69 +1,134 @@
-# Project Structure
+---
+inclusion: always
+---
 
-## Root Level
+# Project Structure & Architecture Guidelines
 
-- **Configuration files** - Package management, build tools, and deployment config
-- **Environment files** - `.env` for local development, `.env.example` as template
-- **Database schema** - `auth-schema.ts` and `drizzle.config.ts` for database setup
+## File Organization Rules
 
-## Source Code (`src/`)
+### Core Directory Structure
 
 ```
 src/
-├── app.html          # HTML template
-├── app.css           # Global styles
-├── app.d.ts          # App-wide TypeScript declarations
-├── hooks.server.ts   # SvelteKit server hooks (auth integration)
-├── lib/              # Shared library code
-│   ├── auth.ts       # Better Auth configuration
-│   ├── auth-client.ts # Client-side auth utilities
-│   ├── assets/       # Static assets (favicon, etc.)
-│   └── server/       # Server-only code
-│       └── db/       # Database layer
-│           ├── index.ts  # Database connection
-│           └── schema.ts # Drizzle schema definitions
-└── routes/           # SvelteKit file-based routing
+├── lib/
+│   ├── components/       # Reusable Svelte components
+│   ├── server/          # Server-only code (database, auth utils)
+│   │   ├── db/          # Database operations and schema
+│   │   └── auth/        # Server-side auth utilities
+│   ├── validation/      # Zod schemas for form validation
+│   └── [utilities].ts   # Shared client/server utilities
+├── routes/              # SvelteKit file-based routing
+│   ├── admin/          # Admin-only routes (protected)
+│   ├── auth/           # Authentication routes
+│   └── [feature]/      # Feature-specific routes
+└── app.html            # Root HTML template
 ```
 
-## Build Outputs
+### File Placement Guidelines
 
-- **`.svelte-kit/`** - SvelteKit build artifacts and generated files
-- **`.sst/`** - SST deployment artifacts and platform code
-- **`node_modules/`** - Dependencies
+- **Server-only code**: Must be in `src/lib/server/` to prevent client bundling
+- **Database operations**: `src/lib/server/db/[entity].ts` pattern
+- **Validation schemas**: `src/lib/validation/[entity].ts` using Zod
+- **Reusable components**: `src/lib/components/` with proper exports in `index.ts`
+- **Route protection**: Use `+layout.server.ts` for auth guards
 
-## Key Conventions
+## Database Conventions
 
-### Database Schema
+### Schema Design
 
-- Located in `src/lib/server/db/schema.ts`
-- Uses Drizzle ORM with PostgreSQL dialect
-- Authentication tables: `user`, `session`, `account`, `verification`
-- All include `createdAt`/`updatedAt` timestamps
-- Any tables beside the authentication tables will have an autoincrementing primary key titled `id`.
+- All tables use autoincrementing `id` as primary key (except auth tables)
+- Include `createdAt` and `updatedAt` timestamps on all entities
+- Use Drizzle ORM with PostgreSQL dialect
+- Schema location: `src/lib/server/db/schema.ts`
 
-### Authentication
+### Database Operations
 
-- Better Auth configured in `src/lib/auth.ts`
-- Server integration via `src/hooks.server.ts`
-- Email/password authentication enabled
-- Drizzle adapter for database persistence
+- Create separate files for each entity: `src/lib/server/db/parks.ts`
+- Use transactions for multi-table operations
+- Always handle database errors with proper error types
+- Export typed query functions, not raw SQL
 
-### File Organization
+## Authentication Architecture
 
-- **Server-only code** goes in `src/lib/server/`
-- **Shared utilities** in `src/lib/`
-- **Routes** follow SvelteKit file-based routing in `src/routes/`
-- **Static assets** in `src/lib/assets/` and `static/`
+### Better Auth Integration
 
-### TypeScript
+- Configuration: `src/lib/auth.ts`
+- Server hooks: `src/hooks.server.ts` for session validation
+- Client utilities: `src/lib/auth-client.ts`
+- Admin protection: Check `user.role === 'admin'` in server load functions
 
-- Strict mode enabled
-- Module resolution set to "bundler"
-- SvelteKit provides path aliases (`$lib`, `$app`, etc.)
-- Type definitions extend from `.svelte-kit/tsconfig.json`
+### Route Protection Patterns
 
-### Testing Structure
+```typescript
+// +layout.server.ts for protected sections
+export const load = async ({ locals }) => {
+	if (!locals.user) {
+		throw redirect(302, '/auth/signin');
+	}
+	return { user: locals.user };
+};
+```
 
-- **Client tests** - `*.svelte.{test,spec}.{js,ts}` files (browser environment)
-- **Server tests** - `*.{test,spec}.{js,ts}` files (Node environment)
-- Test setup files at project root
+## Component Development
+
+### Svelte 5 Patterns
+
+- Use runes: `$state`, `$derived`, `$effect` for reactivity
+- Always include `<script lang="ts">` in components
+- Prefer Flowbite-Svelte components over custom implementations
+- Use TypeScript interfaces for component props
+
+### Form Handling
+
+- Use SvelteKit form actions in `+page.server.ts`
+- Validate with Zod schemas from `src/lib/validation/`
+- Handle loading states with custom stores
+- Display errors using Flowbite Alert components
+
+## Code Style Requirements
+
+### TypeScript Rules
+
+- Strict mode enabled - no `any` types allowed
+- Explicit return types on all functions
+- Use interfaces for object shapes, types for unions
+- Leverage SvelteKit's generated types (`PageData`, `ActionData`)
+
+### Import Conventions
+
+- Use SvelteKit aliases: `$lib`, `$app/environment`, etc.
+- Group imports: external packages, then internal modules
+- Prefer named exports over default exports
+
+## Testing Patterns
+
+### Test Organization
+
+- Component tests: `*.test.ts` files alongside components
+- Integration tests: `*.integration.test.ts` for full workflows
+- Server tests: Test database operations and auth flows
+- Use Vitest for all testing
+
+### Test Naming
+
+- Describe behavior, not implementation
+- Use "should" statements for expectations
+- Group related tests with `describe` blocks
+
+## Admin Interface Conventions
+
+### Route Structure
+
+- Admin routes under `/admin` with layout protection
+- CRUD operations follow RESTful patterns:
+  - List: `/admin/[entity]`
+  - Create: `/admin/[entity]/create`
+  - Edit: `/admin/[entity]/[id]/edit`
+  - Delete: `/admin/[entity]/[id]/delete`
+
+### Form Patterns
+
+- Use consistent form layouts with Flowbite components
+- Implement proper loading states and error handling
+- Validate on both client and server sides
+- Provide clear success/error feedback

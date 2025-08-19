@@ -27,7 +27,7 @@
 	<!-- Quick Actions -->
 	<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 		<!-- Parks Management Card -->
-		<Card class="max-w-none">
+		<Card class="max-w-none p-4">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center">
 					<MapPinAltSolid class="h-8 w-8 text-blue-600 dark:text-blue-400" />
@@ -47,7 +47,7 @@
 		</Card>
 
 		<!-- System Stats Card (placeholder for future features) -->
-		<Card class="max-w-none">
+		<Card class="max-w-none p-4">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center">
 					<ChartOutline class="h-8 w-8 text-green-600 dark:text-green-400" />
@@ -63,7 +63,7 @@
 		</Card>
 
 		<!-- User Management Card (placeholder for future features) -->
-		<Card class="max-w-none">
+		<Card class="max-w-none p-4">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center">
 					<div
