@@ -9,3 +9,4 @@ bun.lockb
 /static/
 
 sst-env.d.ts
+/drizzle/
