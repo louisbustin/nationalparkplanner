@@ -43,13 +43,13 @@
   - Add proper redirects and error responses for unauthorized users
   - _Requirements: 3.3, 3.4_
 
-- [ ] 3. Build admin layout and navigation
+- [x] 3. Build admin layout and navigation
   - Create admin-specific layout with navigation menu
   - Implement responsive design using Flowbite-Svelte components
   - Add breadcrumb navigation and admin branding
   - _Requirements: 2.1, 2.2_
 
-- [ ] 3.1 Create admin layout component
+- [x] 3.1 Create admin layout component
   - Create src/routes/admin/+layout.svelte with admin navigation
   - Use Flowbite-Svelte Navbar and Sidebar components
   - Include links to parks management and future admin sections

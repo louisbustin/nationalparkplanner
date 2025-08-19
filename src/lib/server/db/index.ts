@@ -5,7 +5,7 @@ import { env } from '$env/dynamic/private';
 
 if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
-let dbUrl = process.env.DATABASE_URL || '';
+let dbUrl = env.DATABASE_URL || '';
 if (!dbUrl.endsWith('?sslmode=require&channel_binding=require')) {
 	dbUrl += '?sslmode=require&channel_binding=require';
 }

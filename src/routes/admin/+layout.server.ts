@@ -6,7 +6,7 @@ import { requireAdmin, extractUserFromSession } from '$lib/server/auth/admin';
  * Server-side layout load function for admin routes
  * Validates user authentication and admin authorization for all admin pages
  */
-export const load: LayoutServerLoad = async ({ event }) => {
+export const load: LayoutServerLoad = async (event) => {
 	// Validate the current session
 	const sessionResult = await validateSession(event);
 
