@@ -59,6 +59,7 @@
 		"flowbite-svelte": "^1.12.6",
 		"flowbite-svelte-icons": "^2.3.0",
 		"sst": "3.17.10",
-		"svelte-kit-sst": "2.43.5"
+		"svelte-kit-sst": "2.43.5",
+		"zod": "^4.0.17"
 	}
 }

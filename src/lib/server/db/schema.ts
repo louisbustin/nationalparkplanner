@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, serial, numeric, date } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
@@ -54,4 +54,21 @@ export const verification = pgTable('verification', {
 	expiresAt: timestamp('expires_at').notNull(),
 	createdAt: timestamp('created_at').$defaultFn(() => /* @__PURE__ */ new Date()),
 	updatedAt: timestamp('updated_at').$defaultFn(() => /* @__PURE__ */ new Date())
+});
+
+export const nationalParks = pgTable('national_parks', {
+	id: serial('id').primaryKey(),
+	name: text('name').notNull(),
+	state: text('state').notNull(),
+	description: text('description'),
+	latitude: numeric('latitude', { precision: 10, scale: 8 }),
+	longitude: numeric('longitude', { precision: 11, scale: 8 }),
+	establishedDate: date('established_date'),
+	area: numeric('area', { precision: 10, scale: 2 }), // in square miles
+	createdAt: timestamp('created_at')
+		.$defaultFn(() => new Date())
+		.notNull(),
+	updatedAt: timestamp('updated_at')
+		.$defaultFn(() => new Date())
+		.notNull()
 });
