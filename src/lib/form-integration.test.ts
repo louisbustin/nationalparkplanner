@@ -72,7 +72,7 @@ describe('Form Integration Tests', () => {
 			});
 
 			const result = await formManager.handleSubmit(mockRegistration, {
-				onSuccess: (data) => {
+				onSuccess: (data: any) => {
 					expect(data.user.name).toBe('John Doe');
 				}
 			});
@@ -165,7 +165,7 @@ describe('Form Integration Tests', () => {
 			});
 
 			const result = await formManager.handleSubmit(mockLogin, {
-				onSuccess: (data) => {
+				onSuccess: (data: any) => {
 					expect(data.user.email).toBe('john@example.com');
 				}
 			});
@@ -235,7 +235,7 @@ describe('Form Integration Tests', () => {
 			});
 
 			const result = await formManager.handleSubmit(mockUpdate, {
-				onSuccess: (data) => {
+				onSuccess: (data: any) => {
 					expect(data.user.name).toBe('John Updated Doe');
 				},
 				showToast: true

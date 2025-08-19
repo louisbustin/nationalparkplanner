@@ -5,6 +5,11 @@ import { env } from '$env/dynamic/private';
 
 if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
-const client = neon(env.DATABASE_URL);
+let dbUrl = process.env.DATABASE_URL || '';
+if (!dbUrl.endsWith('?sslmode=require&channel_binding=require')) {
+	dbUrl += '?sslmode=require&channel_binding=require';
+}
+
+const client = neon(dbUrl);
 
 export const db = drizzle(client, { schema });

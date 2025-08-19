@@ -17,8 +17,12 @@ import { loadingStore } from './loading-store.svelte';
 // Mock the auth client
 vi.mock('./auth-client', () => ({
 	authClient: {
-		signUp: vi.fn(),
-		signIn: vi.fn(),
+		signUp: {
+			email: vi.fn()
+		},
+		signIn: {
+			email: vi.fn()
+		},
 		signOut: vi.fn(),
 		getSession: vi.fn(),
 		useSession: vi.fn()
@@ -66,7 +70,7 @@ describe('Authentication Integration Tests', () => {
 				emailVerified: false
 			};
 
-			(authClient.signUp as any).mockResolvedValue({
+			(authClient.signUp.email as any).mockResolvedValue({
 				data: { user: mockUser },
 				error: null
 			});
@@ -95,14 +99,14 @@ describe('Authentication Integration Tests', () => {
 			expect(validationResult.isValid).toBe(true);
 
 			// Simulate registration
-			const result = await authClient.signUp({
+			const result = await authClient.signUp.email({
 				name: formData.name,
 				email: formData.email,
 				password: formData.password
 			});
 
 			expect(result.data?.user).toEqual(mockUser);
-			expect(authClient.signUp).toHaveBeenCalledWith({
+			expect(authClient.signUp.email).toHaveBeenCalledWith({
 				name: 'John Doe',
 				email: 'john@example.com',
 				password: 'password123'
@@ -138,10 +142,10 @@ describe('Authentication Integration Tests', () => {
 
 		it('should handle registration server errors', async () => {
 			const serverError = new Error('Email already exists');
-			(authClient.signUp as any).mockRejectedValue(serverError);
+			(authClient.signUp.email as any).mockRejectedValue(serverError);
 
 			try {
-				await authClient.signUp({
+				await authClient.signUp.email({
 					name: 'John Doe',
 					email: 'existing@example.com',
 					password: 'password123'
@@ -170,7 +174,7 @@ describe('Authentication Integration Tests', () => {
 				}
 			};
 
-			(authClient.signIn as any).mockResolvedValue({
+			(authClient.signIn.email as any).mockResolvedValue({
 				data: mockSession,
 				error: null
 			});
@@ -190,13 +194,13 @@ describe('Authentication Integration Tests', () => {
 			expect(validationResult.isValid).toBe(true);
 
 			// Simulate login
-			const result = await authClient.signIn({
+			const result = await authClient.signIn.email({
 				email: loginData.email,
 				password: loginData.password
 			});
 
 			expect(result.data).toEqual(mockSession);
-			expect(authClient.signIn).toHaveBeenCalledWith({
+			expect(authClient.signIn.email).toHaveBeenCalledWith({
 				email: 'john@example.com',
 				password: 'password123'
 			});
@@ -220,10 +224,10 @@ describe('Authentication Integration Tests', () => {
 
 		it('should handle invalid credentials error', async () => {
 			const credentialsError = new Error('Invalid credentials');
-			(authClient.signIn as any).mockRejectedValue(credentialsError);
+			(authClient.signIn.email as any).mockRejectedValue(credentialsError);
 
 			try {
-				await authClient.signIn({
+				await authClient.signIn.email({
 					email: 'wrong@example.com',
 					password: 'wrongpassword'
 				});
@@ -291,7 +295,7 @@ describe('Authentication Integration Tests', () => {
 					name: 'John Doe',
 					email: 'john@example.com',
 					emailVerified: true,
-					image: null,
+					image: undefined,
 					createdAt: new Date(),
 					updatedAt: new Date()
 				},
@@ -322,7 +326,7 @@ describe('Authentication Integration Tests', () => {
 					name: 'John Doe',
 					email: 'john@example.com',
 					emailVerified: true,
-					image: null,
+					image: undefined,
 					createdAt: new Date(),
 					updatedAt: new Date()
 				},
@@ -382,10 +386,10 @@ describe('Authentication Integration Tests', () => {
 	describe('Error Recovery Scenarios', () => {
 		it('should handle network errors during authentication', async () => {
 			const networkError = new TypeError('Failed to fetch');
-			(authClient.signIn as any).mockRejectedValue(networkError);
+			(authClient.signIn.email as any).mockRejectedValue(networkError);
 
 			try {
-				await authClient.signIn({
+				await authClient.signIn.email({
 					email: 'test@example.com',
 					password: 'password123'
 				});
@@ -446,11 +450,11 @@ describe('Authentication Integration Tests', () => {
 
 			// Step 2: Submit if valid
 			if (validationResult.isValid) {
-				(authClient.signUp as any).mockResolvedValue({
+				(authClient.signUp.email as any).mockResolvedValue({
 					data: { user: { id: '123', name: 'John Doe', email: 'john@example.com' } }
 				});
 
-				const result = await authClient.signUp({
+				const result = await authClient.signUp.email({
 					name: formData.name,
 					email: formData.email,
 					password: formData.password
@@ -511,7 +515,7 @@ describe('Authentication Integration Tests', () => {
 					name: 'John Doe',
 					email: 'john@example.com',
 					emailVerified: true,
-					image: null,
+					image: undefined,
 					createdAt: new Date(),
 					updatedAt: new Date()
 				},
@@ -556,7 +560,7 @@ describe('Authentication Integration Tests', () => {
 					name: 'John Doe',
 					email: 'john@example.com',
 					emailVerified: true,
-					image: null,
+					image: undefined,
 					createdAt: new Date(),
 					updatedAt: new Date()
 				},
