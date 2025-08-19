@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Card, Spinner } from 'flowbite-svelte';
+	import { Button, Card, Heading, Spinner } from 'flowbite-svelte';
 	import LoadingButton from './LoadingButton.svelte';
 	import ErrorMessage from './ErrorMessage.svelte';
 
@@ -38,9 +38,9 @@
 <div class="mx-auto w-full max-w-md">
 	<Card class="p-6">
 		<div class="mb-6 text-center">
-			<h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+			<Heading tag="h1">
 				{title}
-			</h1>
+			</Heading>
 		</div>
 
 		{#if hasGeneralError}

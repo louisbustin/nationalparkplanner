@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Card, Button, Alert, Spinner } from 'flowbite-svelte';
+	import { A, Card, Button, Alert, Spinner, Heading, P } from 'flowbite-svelte';
 	import { FormField } from '$lib/components';
 	import { authValidationRules, validateForm, validatePasswordConfirmation } from '$lib/validation';
 	import { authClient } from '$lib/auth-client';
@@ -112,14 +112,14 @@
 	/>
 </svelte:head>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-	<div class="w-full max-w-md space-y-8">
+<div class="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+	<div>
 		<div class="text-center">
-			<h2 class="mt-6 text-3xl font-extrabold text-gray-900">Create your account</h2>
-			<p class="mt-2 text-sm text-gray-600">Start planning your national park adventures</p>
+			<Heading class="mt-6 text-3xl font-extrabold text-gray-900">Create your account</Heading>
+			<P class="text-center">Start planning your national park adventures</P>
 		</div>
 
-		<Card class="mt-8">
+		<Card class="mt-8 p-4">
 			<form method="POST" onsubmit={handleSubmit} class="space-y-6">
 				{#if submitError}
 					<Alert color="red" class="mb-4">
@@ -190,12 +190,10 @@
 				</Button>
 
 				<div class="text-center">
-					<p class="text-sm text-gray-600">
+					<P class="text-sm ">
 						Already have an account?
-						<a href="/auth/login" class="font-medium text-primary-600 hover:text-primary-500">
-							Sign in here
-						</a>
-					</p>
+						<A href="/auth/login">Sign in here</A>
+					</P>
 				</div>
 			</form>
 		</Card>

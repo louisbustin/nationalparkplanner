@@ -39,7 +39,7 @@
 	<ChevronDownOutline class="h-3 w-3 flex-shrink-0" />
 </Button>
 
-<Dropdown class="z-50 w-48 sm:w-56">
+<Dropdown class="z-50 w-48 sm:w-56" simple>
 	<div
 		class="border-b border-gray-200 px-4 py-3 text-sm text-gray-900 dark:border-gray-600 dark:text-white"
 	>

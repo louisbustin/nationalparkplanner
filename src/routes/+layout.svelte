@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { Navbar, NavBrand, NavHamburger, NavUl, NavLi } from 'flowbite-svelte';
+	import { DarkMode, Navbar, NavBrand, NavHamburger, NavUl, NavLi } from 'flowbite-svelte';
 	import { AuthStatus } from '$lib/components';
 
 	let { children } = $props();
@@ -22,6 +22,7 @@
 
 	<!-- Mobile and Desktop Auth Status + Hamburger -->
 	<div class="flex items-center space-x-3 md:order-2">
+		<DarkMode />
 		<AuthStatus />
 		<NavHamburger onclick={() => (hidden = !hidden)} class="md:hidden" />
 	</div>

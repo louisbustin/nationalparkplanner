@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { Button, Spinner } from 'flowbite-svelte';
+	import { Button, Heading, P, Spinner } from 'flowbite-svelte';
 	import { ArrowRightToBracketOutline } from 'flowbite-svelte-icons';
 
 	let isLoggingOut = $state(false);
@@ -13,10 +13,8 @@
 <div class="flex min-h-[50vh] items-center justify-center">
 	<div class="w-full max-w-md space-y-6 rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
 		<div class="text-center">
-			<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Sign Out</h1>
-			<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-				Are you sure you want to sign out of your account?
-			</p>
+			<Heading tag="h1">Sign Out</Heading>
+			<P class="mt-2 text-sm ">Are you sure you want to sign out of your account?</P>
 		</div>
 
 		<form

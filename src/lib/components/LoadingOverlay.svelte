@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Spinner } from 'flowbite-svelte';
+	import { P, Spinner } from 'flowbite-svelte';
 
 	interface Props {
 		visible: boolean;
@@ -41,9 +41,9 @@
 		>
 			<Spinner color="blue" size={config.spinner} />
 			{#if message}
-				<p class="mt-4 {config.text} text-gray-700 dark:text-gray-300">
+				<P class="mt-4 {config.text} ">
 					{message}
-				</p>
+				</P>
 			{/if}
 		</div>
 	</div>
