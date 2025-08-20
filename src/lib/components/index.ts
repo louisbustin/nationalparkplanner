@@ -2,6 +2,7 @@
 export { default as FormField } from './FormField.svelte';
 export { default as AuthForm } from './AuthForm.svelte';
 export { default as StateDropdown } from './StateDropdown.svelte';
+export { default as AirportFormField } from './AirportFormField.svelte';
 
 // Export navigation components
 export { default as AuthStatus } from './AuthStatus.svelte';
@@ -12,6 +13,7 @@ export { default as ErrorMessage } from './ErrorMessage.svelte';
 export { default as Toast } from './Toast.svelte';
 export { default as ToastContainer } from './ToastContainer.svelte';
 export { default as ErrorBoundary } from './ErrorBoundary.svelte';
+export { default as AirportFormErrorBoundary } from './AirportFormErrorBoundary.svelte';
 
 // Export loading components
 export { default as LoadingSpinner } from './LoadingSpinner.svelte';

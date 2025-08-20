@@ -1,4 +1,13 @@
-import { pgTable, text, timestamp, boolean, serial, numeric, date } from 'drizzle-orm/pg-core';
+import {
+	pgTable,
+	text,
+	timestamp,
+	boolean,
+	serial,
+	numeric,
+	date,
+	integer
+} from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
@@ -65,6 +74,26 @@ export const nationalParks = pgTable('national_parks', {
 	longitude: numeric('longitude', { precision: 11, scale: 8 }),
 	establishedDate: date('established_date'),
 	area: numeric('area', { precision: 10, scale: 2 }), // in square miles
+	createdAt: timestamp('created_at')
+		.$defaultFn(() => new Date())
+		.notNull(),
+	updatedAt: timestamp('updated_at')
+		.$defaultFn(() => new Date())
+		.notNull()
+});
+
+export const airports = pgTable('airports', {
+	id: serial('id').primaryKey(),
+	iataCode: text('iata_code').notNull().unique(), // 3-letter code (e.g., LAX)
+	icaoCode: text('icao_code').unique(), // 4-letter code (e.g., KLAX)
+	name: text('name').notNull(),
+	city: text('city').notNull(),
+	state: text('state'), // State/region/province
+	country: text('country').notNull(),
+	latitude: numeric('latitude', { precision: 10, scale: 8 }).notNull(),
+	longitude: numeric('longitude', { precision: 11, scale: 8 }).notNull(),
+	elevation: integer('elevation'), // feet above sea level
+	timezone: text('timezone'), // IANA timezone identifier
 	createdAt: timestamp('created_at')
 		.$defaultFn(() => new Date())
 		.notNull(),

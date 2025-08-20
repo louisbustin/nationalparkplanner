@@ -14,6 +14,7 @@
 	import {
 		ChartOutline,
 		CogSolid,
+		GlobeOutline,
 		HomeOutline,
 		MapPinAltSolid,
 		UserSolid
@@ -41,12 +42,29 @@
 				items.push({ label: 'Admin', href: '/admin' });
 			} else if (segment === 'parks') {
 				items.push({ label: 'Parks Management', href: '/admin/parks' });
+			} else if (segment === 'airports') {
+				items.push({ label: 'Airports Management', href: '/admin/airports' });
 			} else if (segment === 'create') {
-				items.push({ label: 'Create Park', href: currentPath });
+				// Check if we're in parks or airports context
+				if (currentPath.includes('/admin/parks/')) {
+					items.push({ label: 'Create Park', href: currentPath });
+				} else if (currentPath.includes('/admin/airports/')) {
+					items.push({ label: 'Create Airport', href: currentPath });
+				}
 			} else if (segment === 'edit') {
-				items.push({ label: 'Edit Park', href: currentPath });
+				// Check if we're in parks or airports context
+				if (currentPath.includes('/admin/parks/')) {
+					items.push({ label: 'Edit Park', href: currentPath });
+				} else if (currentPath.includes('/admin/airports/')) {
+					items.push({ label: 'Edit Airport', href: currentPath });
+				}
 			} else if (segment === 'delete') {
-				items.push({ label: 'Delete Park', href: currentPath });
+				// Check if we're in parks or airports context
+				if (currentPath.includes('/admin/parks/')) {
+					items.push({ label: 'Delete Park', href: currentPath });
+				} else if (currentPath.includes('/admin/airports/')) {
+					items.push({ label: 'Delete Airport', href: currentPath });
+				}
 			}
 		}
 
@@ -87,6 +105,7 @@
 	<!-- Mobile Navigation -->
 	<NavUl {hidden} class="md:hidden">
 		<NavLi href="/admin/parks">Parks Management</NavLi>
+		<NavLi href="/admin/airports">Airports Management</NavLi>
 		<NavLi href="/">Back to Main Site</NavLi>
 	</NavUl>
 </Navbar>
@@ -135,6 +154,23 @@
 								: 'text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-300'}"
 						/>
 						Parks Management
+					</a>
+
+					<!-- Airports Management -->
+					<a
+						href="/admin/airports"
+						class="group flex items-center rounded-md px-2 py-2 text-sm font-medium {activeUrl.startsWith(
+							'/admin/airports'
+						)
+							? 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-200'
+							: 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'}"
+					>
+						<GlobeOutline
+							class="mr-3 h-5 w-5 {activeUrl.startsWith('/admin/airports')
+								? 'text-blue-500 dark:text-blue-300'
+								: 'text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-300'}"
+						/>
+						Airports Management
 					</a>
 
 					<!-- Future admin sections can be added here -->
