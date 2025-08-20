@@ -17,10 +17,9 @@ build-job:
 
 run-tests-job:
   stage: test
+  image: mcr.microsoft.com/playwright:v1.55.0-noble
   script:
     - echo "Running unit tests..."
-    - npx playwright install
-    - npx playwright install-deps
     - npm run test
     - echo "Tests complete."
   artifacts:
