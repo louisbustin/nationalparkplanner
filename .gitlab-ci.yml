@@ -17,7 +17,7 @@ build-job:
 
 run-tests-job:
   stage: test
-  image: mcr.microsoft.com/playwright:v1.55.0-noble
+  image: mcr.microsoft.com/playwright:v1.54.2-noble
   script:
     - echo "Running unit tests..."
     - npm run test
