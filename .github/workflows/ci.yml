@@ -61,6 +61,8 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run unit tests
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npm run test
 
       - name: Upload test results
