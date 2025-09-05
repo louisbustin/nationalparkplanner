@@ -27,6 +27,8 @@ jobs:
         run: npm install
 
       - name: Build application
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npm run build
 
       - name: Upload build artifacts
@@ -118,5 +120,5 @@ jobs:
         run: npx sst deploy --stage production
         env:
           # Add any required environment variables for deployment
-          SST_AWS_ACCESS_KEY_ID: ${{ secrets.SST_AWS_ACCESS_KEY_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           # SST_AWS_SECRET_ACCESS_KEY: ${{ secrets.SST_AWS_SECRET_ACCESS_KEY }}
