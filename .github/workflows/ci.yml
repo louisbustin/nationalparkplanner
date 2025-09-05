@@ -117,5 +117,5 @@ jobs:
         run: npx sst deploy --stage production
         env:
           # Add any required environment variables for deployment
-          # SST_AWS_ACCESS_KEY_ID: ${{ secrets.SST_AWS_ACCESS_KEY_ID }}
+          SST_AWS_ACCESS_KEY_ID: ${{ secrets.SST_AWS_ACCESS_KEY_ID }}
           # SST_AWS_SECRET_ACCESS_KEY: ${{ secrets.SST_AWS_SECRET_ACCESS_KEY }}
